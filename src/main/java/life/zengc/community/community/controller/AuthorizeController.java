@@ -3,6 +3,8 @@ package life.zengc.community.community.controller;
 import com.alibaba.fastjson.JSON;
 import life.zengc.community.community.dto.AccessTokenDTO;
 import life.zengc.community.community.dto.GithubUser;
+import life.zengc.community.community.mapper.UserMapper;
+import life.zengc.community.community.model.Person;
 import life.zengc.community.community.provider.GithubProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Slf4j
 @Controller
@@ -19,6 +21,9 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Value("${github.client.id}")
     private String clientId;
@@ -30,14 +35,33 @@ public class AuthorizeController {
     private String redirectURI;
 
     @GetMapping("/callback")
-    public String callBack(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state){
+    public String callBack(@RequestParam(name = "code") String code,
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest request){
         log.info("code: " + code);
         log.info("state: " + state);
         AccessTokenDTO accessTokenDTO = setAccessTokenDTOData(code, clientId, clientSecret, redirectURI, state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser user = githubProvider.getUser(accessToken);
         log.info("UserName: "+ user.getName());
-        return "index";
+        if (user != null) {
+            Person person = setPerson(user);
+            userMapper.insert(person);
+            request.getSession().setAttribute("user", user);
+            return "redirect:/";
+        }else {
+            return "redirect:/";
+        }
+    }
+
+    public Person setPerson(GithubUser githubUser) {
+        Person person = new Person();
+        person.setName(githubUser.getName());
+        person.setToken(UUID.randomUUID().toString());
+        person.setAccountId(githubUser.getId().toString());
+        person.setGmtCreate(System.currentTimeMillis());
+        person.setGmtModified(person.getGmtCreate());
+        return person;
     }
 
     public AccessTokenDTO setAccessTokenDTOData(
