@@ -2,6 +2,9 @@ package life.zengc.community.community.model;
 
 import lombok.Data;
 
+/**
+ * 用户数据模型
+ */
 @Data
 public class Person {
 

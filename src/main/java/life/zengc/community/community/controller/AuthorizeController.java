@@ -12,9 +12,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+/**
+ * 用户登录控制器
+ */
 @Slf4j
 @Controller
 public class AuthorizeController {
@@ -34,10 +40,18 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirectURI;
 
+    /**
+     * 对返回的用户token插入数据库进行持久化操作
+     * @param code
+     * @param state
+     * @param request
+     * @return
+     */
     @GetMapping("/callback")
     public String callBack(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest request){
+                           HttpServletRequest request,
+                           HttpServletResponse response){
         log.info("code: " + code);
         log.info("state: " + state);
         AccessTokenDTO accessTokenDTO = setAccessTokenDTOData(code, clientId, clientSecret, redirectURI, state);
@@ -47,13 +61,18 @@ public class AuthorizeController {
         if (user != null) {
             Person person = setPerson(user);
             userMapper.insert(person);
-            request.getSession().setAttribute("user", user);
+            response.addCookie(new Cookie("token", person.getToken()));
             return "redirect:/";
         }else {
             return "redirect:/";
         }
     }
 
+    /**
+     * 设置用户状态
+     * @param githubUser
+     * @return
+     */
     public Person setPerson(GithubUser githubUser) {
         Person person = new Person();
         person.setName(githubUser.getName());
@@ -64,6 +83,15 @@ public class AuthorizeController {
         return person;
     }
 
+    /**
+     * 设置用户登录
+     * @param code
+     * @param clientId
+     * @param clientSecret
+     * @param redirectURI
+     * @param state
+     * @return
+     */
     public AccessTokenDTO setAccessTokenDTOData(
             String code,
             String clientId,

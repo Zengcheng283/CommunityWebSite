@@ -2,6 +2,9 @@ package life.zengc.community.community.dto;
 
 import lombok.Data;
 
+/**
+ * 用户登录状态
+ */
 @Data
 public class GithubUser {
 
