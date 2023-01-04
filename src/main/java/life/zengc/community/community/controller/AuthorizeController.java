@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import life.zengc.community.community.dto.AccessTokenDTO;
 import life.zengc.community.community.dto.GithubUser;
 import life.zengc.community.community.mapper.UserMapper;
-import life.zengc.community.community.model.Person;
+import life.zengc.community.community.model.User;
 import life.zengc.community.community.provider.GithubProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,47 @@ public class AuthorizeController {
     private String redirectURI;
 
     /**
+     * 设置用户状态
+     * @param githubUser
+     * @return
+     */
+    private User setPerson(GithubUser githubUser) {
+        User user = new User();
+        user.setName(githubUser.getName());
+        user.setToken(UUID.randomUUID().toString());
+        user.setAccountId(githubUser.getId().toString());
+        user.setGmtCreate(System.currentTimeMillis());
+        user.setGmtModified(user.getGmtCreate());
+        user.setAvatarUrl(githubUser.getAvatar_url());
+        return user;
+    }
+
+    /**
+     * 设置用户登录
+     * @param code
+     * @param clientId
+     * @param clientSecret
+     * @param redirectURI
+     * @param state
+     * @return
+     */
+    private AccessTokenDTO setAccessTokenDTOData(
+            String code,
+            String clientId,
+            String clientSecret,
+            String redirectURI,
+            String state) {
+        AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
+        accessTokenDTO.setCode(code);
+        accessTokenDTO.setClient_id(clientId);
+        accessTokenDTO.setClient_secret(clientSecret);
+        accessTokenDTO.setRedirect_uri(redirectURI);
+        accessTokenDTO.setState(state);
+        log.info(JSON.toJSONString(accessTokenDTO));
+        return accessTokenDTO;
+    }
+
+    /**
      * 对返回的用户token插入数据库进行持久化操作
      * @param code
      * @param state
@@ -56,55 +97,15 @@ public class AuthorizeController {
         log.info("state: " + state);
         AccessTokenDTO accessTokenDTO = setAccessTokenDTOData(code, clientId, clientSecret, redirectURI, state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
-        GithubUser user = githubProvider.getUser(accessToken);
-        log.info("UserName: "+ user.getName());
-        if (user != null) {
-            Person person = setPerson(user);
-            userMapper.insert(person);
-            response.addCookie(new Cookie("token", person.getToken()));
+        GithubUser githubUser = githubProvider.getUser(accessToken);
+        log.info("UserName: "+ githubUser.getName());
+        if (githubUser != null) {
+            User user = setPerson(githubUser);
+            userMapper.insert(user);
+            response.addCookie(new Cookie("token", user.getToken()));
             return "redirect:/";
         }else {
             return "redirect:/";
         }
-    }
-
-    /**
-     * 设置用户状态
-     * @param githubUser
-     * @return
-     */
-    public Person setPerson(GithubUser githubUser) {
-        Person person = new Person();
-        person.setName(githubUser.getName());
-        person.setToken(UUID.randomUUID().toString());
-        person.setAccountId(githubUser.getId().toString());
-        person.setGmtCreate(System.currentTimeMillis());
-        person.setGmtModified(person.getGmtCreate());
-        return person;
-    }
-
-    /**
-     * 设置用户登录
-     * @param code
-     * @param clientId
-     * @param clientSecret
-     * @param redirectURI
-     * @param state
-     * @return
-     */
-    public AccessTokenDTO setAccessTokenDTOData(
-            String code,
-            String clientId,
-            String clientSecret,
-            String redirectURI,
-            String state) {
-        AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
-        accessTokenDTO.setCode(code);
-        accessTokenDTO.setClient_id(clientId);
-        accessTokenDTO.setClient_secret(clientSecret);
-        accessTokenDTO.setRedirect_uri(redirectURI);
-        accessTokenDTO.setState(state);
-        log.info(JSON.toJSONString(accessTokenDTO));
-        return accessTokenDTO;
     }
 }

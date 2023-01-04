@@ -6,7 +6,7 @@ import lombok.Data;
  * 用户数据模型
  */
 @Data
-public class Person {
+public class User {
 
     private Integer id;
 
@@ -19,4 +19,6 @@ public class Person {
     private Long gmtCreate;
 
     private Long gmtModified;
+
+    private String avatarUrl;
 }
