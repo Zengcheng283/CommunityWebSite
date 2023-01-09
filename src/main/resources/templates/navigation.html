@@ -39,13 +39,12 @@
                         <ul class="dropdown-menu">
                             <li><a href="/profile/published">我的发布</a></li>
                             <li><a href="#">个人资料</a></li>
-                            <li><a href="#">退出登录</a></li>
+                            <li><a href="/logout">退出登录</a></li>
                         </ul>
                     </li>
                     <li th:unless="${session.user != null}"><a
                             href="https://github.com/login/oauth/authorize?client_id=9b52377c31220b9e94e9&redirect_uri=http://localhost:8887/callback&scope=user&state=18871">登录</a>
                     </li>
-
                 </ul>
             </div>
         </div>

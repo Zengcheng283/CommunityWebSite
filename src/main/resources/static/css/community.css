@@ -1,12 +1,23 @@
-@charset "UTF-8";
 
 .body {
-    background-color: #efefef;
+    background-image: url('../img/background.jpeg');
+    background-size: cover;
 }
 
+/*.nav {*/
+/*    background-color: transparent;*/
+/*    backdrop-filter: blur(5px);*/
+/*}*/
+
 .main {
-    background-color: white;
     margin: 30px;
+    background-color: transparent;
+    backdrop-filter: blur(3px);
+}
+
+.navigation {
+    background-color: transparent;
+    backdrop-filter: blur(5px);
 }
 
 .btn-publish {
@@ -23,4 +34,44 @@
     font-size: 12px;
     font-weight: normal;
     color: #999;
+}
+
+.profile .section {
+    margin-top: 15px;
+}
+
+.community-menu {
+    color: #999;
+    font-size: 13px;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.span-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jumbotron {
+    margin: 50px;
+}
+
+.text-main {
+    color: #999;
+}
+
+.page-navigation {
+    text-align-last: center;
+}
+
+.input-text {
+    background-color: transparent;
+    color: whitesmoke;
+}
+
+.white-smoke-text {
+    color: whitesmoke;
 }

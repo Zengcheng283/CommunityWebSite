@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<div th:fragment="page">
+    <nav aria-label="Page navigation" class="page-navigation">
+        <ul class="pagination">
+            <li th:if="${pageDTO.showFirstPage}">
+                <a aria-label="Previous" th:href="@{/(page=1)}">
+                    <span aria-hidden="true">&lt;&lt;</span>
+                </a>
+            </li>
+            <li th:if="${pageDTO.showPrevious}">
+                <a aria-label="Previous" th:href="@{/(page=${pageDTO.currentPage - 1})}">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <li th:each="page: ${pageDTO.pages}" th:class="${pageDTO.currentPage == page} ? 'active' : ''">
+                <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+            </li>
+            <li th:if="${pageDTO.showNextPage}">
+                <a aria-label="Next" th:href="@{/(page=${pageDTO.currentPage + 1})}">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <li th:if="${pageDTO.showEndPage}">
+                <a aria-label="Next" th:href="@{/(page=${pageDTO.totalPage})}">
+                    <span aria-hidden="true">&gt;&gt;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+
+</html>

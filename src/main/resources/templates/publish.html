@@ -3,40 +3,41 @@
 <head>
     <title>发布 - 第一个社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="css/community.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/>
     <script src="/js/jquery-3.6.3.min.js"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
-<body>
+<body class="body">
 <div th:insert="~{navigation :: nav}"></div>
-<div class="container-fluid main">
+<div class="container-fluid main profile">
     <div class="row">
-        <div class="col-lg-9 col-md-12 col-xs-12">
-            <h2><span class="glyphicon glyphicon-search" aria-hidden="true"></span>发起</h2>
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2 class="text-main"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>发起</h2>
             <hr>
 
             <form action="/publish" method="post">
                 <div class="form-group">
-                    <label for="title">问题标题</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题(简单扼要)">
+                    <input type="hidden" class="form-control" id="id" name="id" th:value="${id == null ? id : 0}">
+                    <label for="title" class="text-main">问题标题</label>
+                    <input type="text" class="form-control input-text" id="title" name="title" placeholder="问题标题(简单扼要)" th:value="${questionTitle}">
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${title}"
                           th:if="${title != null}">
                         </span>
                 </div>
                 <div class="form-group">
-                    <label for="title">问题补充</label>
-                    <textarea name="description" id="description" class="form-control" cols="30" rows="10"></textarea>
+                    <label for="title" class="text-main">问题补充</label>
+                    <textarea name="description" id="description" class="form-control input-text" cols="30" rows="10" th:text="${questionDescription}"></textarea>
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${description}"
                           th:if="${description != null}">
                         </span>
                 </div>
                 <div class="form-group">
-                    <label for="title">添加标签</label>
-                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签">
+                    <label for="title" class="text-main">添加标签</label>
+                    <input type="text" class="form-control input-text" id="tag" name="tag" placeholder="输入标签" th:value="${questionTag}">
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${tag}"
                           th:if="${tag != null}">
@@ -55,7 +56,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-3 col-md-12 col-xs-12">
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 white-smoke-text">
             <h3>问题发起指南</h3>
             <br/>
             •问题标题：请用精简的语言描述您发布的问题，不超过25字;

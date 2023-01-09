@@ -41,21 +41,21 @@ public class IndexController {
             HttpServletRequest request,
             Model model,
             @RequestParam(name = "page", defaultValue = "1") Integer page,
-            @RequestParam(name = "size", defaultValue = "5") Integer size) {
-        Cookie[] cookies = request.getCookies();
-        log.info(Arrays.toString(cookies));
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+            @RequestParam(name = "size", defaultValue = "8") Integer size) {
+//        Cookie[] cookies = request.getCookies();
+//        log.info(Arrays.toString(cookies));
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("token")) {
+//                    String token = cookie.getValue();
+//                    User user = userMapper.findByToken(token);
+//                    if (user != null) {
+//                        request.getSession().setAttribute("user", user);
+//                    }
+//                    break;
+//                }
+//            }
+//        }
         PageDTO pageDTO = questionService.list(page, size);
         model.addAttribute("pageDTO", pageDTO);
         return "index";
