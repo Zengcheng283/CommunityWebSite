@@ -35,9 +35,9 @@ public class PublishController {
      */
     private Question setQuestion(String title,
                                  String description,
-                                 Integer creator,
+                                 String creator,
                                  String tag,
-                                 Integer id) {
+                                 String id) {
         Question question = new Question();
         question.setTitle(title);
         question.setDescription(description);
@@ -48,7 +48,8 @@ public class PublishController {
     }
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("questionType", "发布");
         return "publish";
     }
 
@@ -100,13 +101,14 @@ public class PublishController {
     }
 
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable(name = "id") Integer id,
+    public String edit(@PathVariable(name = "id") String id,
                        Model model) {
         QuestionDTO questionDTO = questionService.getById(id);
         model.addAttribute("questionTitle", questionDTO.getTitle());
         model.addAttribute("questionDescription", questionDTO.getDescription());
         model.addAttribute("questionTag", questionDTO.getTag());
         model.addAttribute("id", questionDTO.getId());
+        model.addAttribute("questionType", "修改");
         return "publish";
     }
 }

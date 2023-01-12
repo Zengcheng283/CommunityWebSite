@@ -12,7 +12,7 @@ public interface QuestionMapper {
      * 向数据库question表插入一条数据
      * @param question
      */
-    @Insert("insert into question(title, description, gmt_create, gmt_modified, creator, tag) values (#{title}, #{description}, #{gmtCreate}, #{gmtModified}, #{creator}, #{tag})")
+    @Insert("insert into question(id, title, description, gmt_create, gmt_modified, creator, tag) values (#{id}, #{title}, #{description}, #{gmtCreate}, #{gmtModified}, #{creator}, #{tag})")
     void create(Question question);
 
     /**
@@ -41,7 +41,7 @@ public interface QuestionMapper {
     @Select("select * from question where creator = #{id} limit #{offset}, #{size}")
     List<Question> listById(@Param(value = "offset") Integer offset,
                         @Param(value = "size") Integer size,
-                        @Param(value = "id") Integer id);
+                        @Param(value = "id") String id);
 
 
     /**
@@ -50,7 +50,7 @@ public interface QuestionMapper {
      * @return
      */
     @Select("select count(1) from question where creator = #{id}")
-    Integer countById(@Param(value = "id") Integer id);
+    Integer countById(@Param(value = "id") String id);
 
     /**
      * 根据id查询问题详情
@@ -58,11 +58,23 @@ public interface QuestionMapper {
      * @return
      */
     @Select("select * from question where id = #{id}")
-    Question getById(@Param(value = "id") Integer id);
+    Question getById(@Param(value = "id") String id);
 
     @Update("update question set title = #{title}, description = #{description}, tag = #{tag}, gmt_modified = #{gmtModified} where id = #{id}")
     int update(Question question);
 
     @Update("update question set view_count = view_count + 1 where id = #{id}")
-    void updateViewCount(@Param(value = "id") Integer id);
+    void updateViewCount(@Param(value = "id") String id);
+
+    @Select("select * from question where id = #{parentId}")
+    Question selectByPId(@Param(value = "parentId") String parentId);
+
+    @Update("update question set comment_count = comment_count + 1 where id = #{id}")
+    void incCommentCount(Question resultQuestion);
+
+    @Select("select * from question where id = #{id}")
+    Question selectById(@Param(value = "id") String id);
+
+    @Delete("delete from question where id = #{id}")
+    int deleteById(@Param(value = "id") String id);
 }

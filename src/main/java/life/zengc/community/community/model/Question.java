@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Question {
 
-    private Integer id;
+    private String id;
 
     private String title;
 
@@ -18,7 +18,7 @@ public class Question {
 
     private Long gmtModified;
 
-    private Integer creator;
+    private String creator;
 
     private Integer commentCount;
 

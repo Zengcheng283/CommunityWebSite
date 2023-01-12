@@ -13,7 +13,6 @@
 <div th:insert="~{navigation :: nav}"></div>
 <div class="jumbotron navigation white-smoke-text">
     <h1 class="white-smoke-text">出错了！</h1>
-    <h2 th:text="${errorCode}" class="white-smoke-text"></h2>
     <p th:text="${message == null ? '服务器太热了，请稍等一会' : message}" class="white-smoke-text">服务器太热了，请稍等一会</p>
     <p><a class="btn btn-primary btn-lg" href="/" role="button">回到主页</a></p>
 </div>

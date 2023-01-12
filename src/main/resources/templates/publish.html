@@ -14,14 +14,18 @@
 <div class="container-fluid main profile">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2 class="text-main"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>发起</h2>
+            <h2 class="text-main">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                <span th:text="${questionType}"></span>
+            </h2>
             <hr>
 
             <form action="/publish" method="post">
                 <div class="form-group">
                     <input type="hidden" class="form-control" id="id" name="id" th:value="${id == null ? id : 0}">
                     <label for="title" class="text-main">问题标题</label>
-                    <input type="text" class="form-control input-text" id="title" name="title" placeholder="问题标题(简单扼要)" th:value="${questionTitle}">
+                    <input type="text" class="form-control input-text" id="title" name="title"
+                           placeholder="问题标题(简单扼要)" th:value="${questionTitle}">
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${title}"
                           th:if="${title != null}">
@@ -29,7 +33,8 @@
                 </div>
                 <div class="form-group">
                     <label for="title" class="text-main">问题补充</label>
-                    <textarea name="description" id="description" class="form-control input-text" cols="30" rows="10" th:text="${questionDescription}"></textarea>
+                    <textarea name="description" id="description" class="form-control input-text" cols="30" rows="10"
+                              th:text="${questionDescription}"></textarea>
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${description}"
                           th:if="${description != null}">
@@ -37,7 +42,8 @@
                 </div>
                 <div class="form-group">
                     <label for="title" class="text-main">添加标签</label>
-                    <input type="text" class="form-control input-text" id="tag" name="tag" placeholder="输入标签" th:value="${questionTag}">
+                    <input type="text" class="form-control input-text" id="tag" name="tag" placeholder="输入标签"
+                           th:value="${questionTag}">
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${tag}"
                           th:if="${tag != null}">
@@ -49,8 +55,8 @@
                               th:text="${error}"
                               th:if="${error != null}">
                         </span>
-                        <button type="submit" class="btn btn-success btn-publish col-lg-3 col-md-12 col-xs-12">
-                            发布
+                        <button type="submit" class="btn btn-publish btn-pub col-lg-3 col-md-12 col-xs-12"
+                                th:text="${questionType}">
                         </button>
                     </div>
                 </div>

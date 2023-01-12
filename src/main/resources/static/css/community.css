@@ -2,6 +2,7 @@
 .body {
     background-image: url('../img/background.jpeg');
     background-size: cover;
+    background-attachment: fixed;
 }
 
 /*.nav {*/
@@ -28,6 +29,14 @@
 .media-object {
     width: 38px;
     height: 38px;
+}
+
+.comment {
+    margin: 10px 0;
+}
+
+.details-media-body {
+    padding-top: 10px;
 }
 
 .text-desc {
@@ -74,4 +83,73 @@
 
 .white-smoke-text {
     color: whitesmoke;
+}
+
+.media-repeat {
+    margin: 10px 0;
+}
+
+.link-text {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+.text-area {
+    color: whitesmoke;
+    background-color: transparent;
+}
+
+.repeat-btn {
+    background-color: transparent;
+    color: whitesmoke;
+    float: right;
+    border: 1px solid whitesmoke;
+    margin-bottom: 10px;
+}
+
+.comment_sp {
+    margin: 0;
+}
+
+.icon {
+    margin-right: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.icon:hover {
+    color: gray;
+}
+
+.tran-background {
+    background-color: transparent;
+}
+
+.comment-btn:hover {
+    background-color: whitesmoke;
+    color: black;
+}
+
+.comment-btn:focus {
+    color: gray;
+}
+
+.comment-drop-menu {
+    background-color: gray;
+}
+
+.btn-pub {
+    background-color: transparent;
+    border: 1px solid whitesmoke;
+    color: whitesmoke;
+}
+
+.btn-pub:hover {
+    color: gray;
+}
+
+.comments {
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid whitesmoke;
 }

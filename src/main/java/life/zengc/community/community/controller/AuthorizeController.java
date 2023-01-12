@@ -1,6 +1,7 @@
 package life.zengc.community.community.controller;
 
 import com.alibaba.fastjson.JSON;
+import life.zengc.community.community.common.CommonMethods;
 import life.zengc.community.community.dto.AccessTokenDTO;
 import life.zengc.community.community.dto.GithubUser;
 import life.zengc.community.community.model.User;
@@ -49,6 +50,7 @@ public class AuthorizeController {
      */
     private User setPerson(GithubUser githubUser) {
         User user = new User();
+        user.setId("");
         user.setName(githubUser.getName());
         user.setToken(UUID.randomUUID().toString());
         user.setAccountId(githubUser.getId().toString());

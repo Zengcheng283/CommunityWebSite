@@ -1,6 +1,11 @@
 package life.zengc.community.community.advice;
 
+import com.alibaba.fastjson.JSON;
+import life.zengc.community.community.dto.ResultDTO;
+import life.zengc.community.community.exception.CustomizeErrorCode;
 import life.zengc.community.community.exception.CustomizeException;
+import lombok.val;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -11,23 +16,49 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Objects;
 
 @ControllerAdvice
 public class CustomizeError {
 
     @ExceptionHandler(Exception.class)
     ModelAndView handleControllerException(HttpServletRequest request,
-                                           Throwable ex,
-                                           Model model) {
-        HttpStatus status = getStatus(request);
+                                     Throwable ex,
+                                     Model model,
+                                     HttpServletResponse response) {
+        String contentType = request.getContentType();
 
-        if (ex instanceof CustomizeException) {
-            model.addAttribute("message", ex.getMessage());
+        if (Objects.equals(contentType, "application/json")) {
+            ResultDTO resultDTO = null;
+            // 返回JSON
+            if (ex instanceof CustomizeException) {
+                resultDTO =  ResultDTO.error((CustomizeException) ex);
+            } else {
+                resultDTO = ResultDTO.error(CustomizeErrorCode.SERVICE_ERROR);
+            }
+
+            try {
+                response.setContentType("application/json");
+                response.setStatus(200);
+                response.setCharacterEncoding("utf-8");
+                PrintWriter writer = response.getWriter();
+                writer.write(JSON.toJSONString(resultDTO));
+                writer.close();
+            } catch (IOException IOex) {
+            }
+            return null;
+
         } else {
-            model.addAttribute("message", "服务器冒烟了，请稍等");
+            //返回页面
+            if (ex instanceof CustomizeException) {
+                model.addAttribute("message", ex.getMessage());
+            } else {
+                model.addAttribute("message", CustomizeErrorCode.SERVICE_ERROR.getMessage());
+            }
+            return new ModelAndView("error");
         }
-        model.addAttribute("errorCode", status);
-        return new ModelAndView("error");
     }
 
     private HttpStatus getStatus(HttpServletRequest request) {

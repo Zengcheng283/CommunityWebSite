@@ -4,27 +4,23 @@ import life.zengc.community.community.model.User;
 import lombok.Data;
 
 @Data
-public class QuestionDTO {
+public class CommentDTO {
 
     private String id;
 
-    private String title;
+    private String parentId;
 
-    private String description;
+    private Integer type;
+
+    private String commentator;
 
     private Long gmtCreate;
 
     private Long gmtModified;
 
-    private String creator;
+    private Long likeCount;
 
-    private Integer commentCount;
-
-    private Integer viewCount;
-
-    private Integer likeCount;
-
-    private String tag;
+    private String content;
 
     private User user;
 }
