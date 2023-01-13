@@ -162,29 +162,5 @@ public class QuestionService {
         return;
     }
 
-    public List<CommentDTO> listByQuestionId(String id) {
-        List<Comment> commentList = commentMapper.selectByPIdAndType(id, CommentTypeEnum.QUESTION.getType());
 
-        if (commentList.size() == 0) {
-            return new ArrayList<>();
-        }
-
-        // 流式编程，遍历list中每一个对象，获取commentator，在User表中进行查询后，直接拷贝入commentDTO，进行收集变为List
-
-        Set<String> commentatorSet = commentList.stream()
-                .map(Comment::getCommentator)
-                .collect(Collectors.toSet());
-
-        Map<String, User> userMap = commentatorSet.stream()
-                .map(commentator -> userMapper.findById(commentator))
-                .collect(Collectors.toMap(User::getId, user -> user));
-
-        return commentList.stream()
-                .map(comment -> {
-                    CommentDTO commentDTO = new CommentDTO();
-                    BeanUtils.copyProperties(comment, commentDTO);
-                    commentDTO.setUser(userMap.get(comment.getCommentator()));
-                    return commentDTO;
-                }).collect(Collectors.toList());
-    }
 }

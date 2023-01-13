@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @ControllerAdvice
@@ -32,11 +34,14 @@ public class CustomizeError {
 
         if (Objects.equals(contentType, "application/json")) {
             ResultDTO resultDTO = null;
+            Map<String, String> data = new HashMap<>();
             // 返回JSON
             if (ex instanceof CustomizeException) {
-                resultDTO =  ResultDTO.error((CustomizeException) ex);
+                data.put("running", "error");
+                resultDTO =  ResultDTO.error((CustomizeException) ex, data);
             } else {
-                resultDTO = ResultDTO.error(CustomizeErrorCode.SERVICE_ERROR);
+                data.put("running", "error");
+                resultDTO = ResultDTO.error(CustomizeErrorCode.SERVICE_ERROR, data);
             }
 
             try {

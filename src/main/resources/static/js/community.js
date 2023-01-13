@@ -1,8 +1,14 @@
 function post() {
-    var question_id = $("#question_id").val();
-    var comment_text = $("#comment_text").val();
+    var targetId = $("#question_id").val();
+    var content = $("#comment_text").val();
 
-    if (!comment_text) {
+    comment2target(targetId, 1, content);
+
+
+}
+
+function comment2target(targetId, type, content) {
+    if (!content) {
         alert("回复未输入内容");
         return;
     }
@@ -12,32 +18,19 @@ function post() {
         url: "/comment",
         contentType: "application/json",
         data: JSON.stringify({
-            "id": question_id,
-            "content": comment_text,
-            "type": 1
+            "id": targetId,
+            "content": content,
+            "type": type
         }),
         success: function (response) {
             if (response.code === 200) {
                 $("#comment_section").hide();
                 location.reload();
-                // var url = location.href;
-                // const splitWord = url.split("/")
-                // var id = splitWord[splitWord.length-1]
-                // var address = splitWord[2]
-                // $.ajax({
-                //     url: "http://"+ address + "/local/" + id,
-                //     contentType: "application/json",
-                //     success: function (response) {
-                //         console.log(response);
-                //     }
-                // })
-                // console.log("局部刷新")
             } else {
                 if (response.code === 2003) {
                     var isAccepted = confirm(response.message);
                     if (isAccepted) {
-                        window.open("https://github.com/login/oauth/authorize?client_id=9b52377c31220b9e94e9&redirect_uri=http://localhost:8887/callback&scope=user&state=18871");
-
+                        login();
                     }
                 }
                 alert(response.message);
@@ -45,8 +38,15 @@ function post() {
         },
         dataType: "json"
     });
-    console.log(question_id);
-    console.log(comment_text);
+}
+
+function comment(e) {
+    var id = e.getAttribute("data-id");
+    var content = $("#reply-" + id).val();
+
+    console.log(id);
+
+    comment2target(id, 2, content);
 }
 
 function login() {
@@ -66,4 +66,70 @@ function showRepeatDialogue() {
 
 function hideRepeatDialogue() {
     $("#comment_section").hide();
+    $("#comment_text").val("");
+}
+
+/**
+ * 展开二级评论
+ */
+function collapseComments(e) {
+    var id = e.getAttribute("data-id");
+    var comments = $("#comment-" + id);
+
+
+    var collapse = e.getAttribute("data-collapse");
+
+    if (collapse) {
+        var subCommentContainer = $("#comment-" + id);
+        subCommentContainer.children(".content").remove();
+
+
+        // 折叠二级评论
+        comments.toggleClass("in");
+        e.classList.toggle("active");
+        e.removeAttribute("data-collapse");
+    } else {
+        $.getJSON("/comment/" + id, function (data) {
+                var subCommentContainer = $("#comment-" + id);
+                $.each(data.data, function (index, comment) {
+                    var mediaLeftElement = $("<div/>", {
+                        "class": "media-left"
+                    }).append($("<img/>", {
+                        "class": "media-object img-rounded",
+                        "src": comment.user.avatarUrl
+                    }));
+
+                    var mediaBodyElement = $("<div/>", {
+                        "class": "media-body"
+                    }).append($("<h5/>", {
+                        "class": "media-heading",
+                        "html": comment.user.name
+                    })).append($("<div/>", {
+                        "html": comment.content
+                    })).append($("<div/>", {
+                        "class": "menu"
+                    }).append($("<span/>", {
+                        "class": "pull-right",
+                        "html": moment(comment.gmtCreate).format('YYYY-MM-DD HH:mm')
+                    })));
+
+                    var mediaElement = $("<div/>", {
+                        "class": "media"
+                    }).append(mediaLeftElement).append(mediaBodyElement);
+
+                    var commentElement = $("<div/>",
+                        {
+                            "class": "col-lg-12 col-md-12 col-sm-12 col-xs-12 comments content"
+                        }).append(mediaElement);
+
+                    subCommentContainer.prepend(commentElement);
+                });
+
+            }
+        )
+        ;
+        comments.toggleClass("in");
+        e.classList.toggle("active");
+        e.setAttribute("data-collapse", "in");
+    }
 }

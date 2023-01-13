@@ -111,13 +111,17 @@
     margin: 0;
 }
 
-.icon {
+.icon{
     margin-right: 6px;
     font-size: 15px;
     cursor: pointer;
 }
 
-.icon:hover {
+.active{
+    color: gray;
+}
+
+.icon:hover{
     color: gray;
 }
 
@@ -153,3 +157,16 @@
     margin-bottom: 15px;
     border-bottom: 1px solid whitesmoke;
 }
+
+.collapse-border {
+    border: 1px solid whitesmoke;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.collapse-text {
+    margin-bottom: 20px;
+}
+
+.content {}

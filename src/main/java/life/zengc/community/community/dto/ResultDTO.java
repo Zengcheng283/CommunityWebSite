@@ -5,28 +5,32 @@ import life.zengc.community.community.exception.CustomizeException;
 import lombok.Data;
 
 @Data
-public class ResultDTO {
+public class ResultDTO<T> {
 
     private Integer code;
 
     private String message;
 
-    private static ResultDTO createDTO(Integer code, String message) {
-        ResultDTO resultDTO = new ResultDTO();
+    // 范型T
+    private T data;
+
+    private static <T> ResultDTO createDTO(Integer code, String message, T data) {
+        ResultDTO<T> resultDTO = new ResultDTO<>();
         resultDTO.setCode(code);
         resultDTO.setMessage(message);
+        resultDTO.setData(data);
         return resultDTO;
     }
 
-    public static ResultDTO error(CustomizeErrorCode errorCode) {
-        return createDTO(errorCode.getCode(), errorCode.getMessage());
+    public static <T> ResultDTO error(CustomizeErrorCode errorCode, T data) {
+        return createDTO(errorCode.getCode(), errorCode.getMessage(), data);
     }
 
-    public static ResultDTO error(CustomizeException ex) {
-        return createDTO(ex.getCode(), ex.getMessage());
+    public static <T> ResultDTO error(CustomizeException ex, T data) {
+        return createDTO(ex.getCode(), ex.getMessage(), data);
     }
 
-    public static ResultDTO ok() {
-        return createDTO(200, "success");
+    public static <T> ResultDTO ok(T data) {
+        return createDTO(200, "success", data);
     }
 }
