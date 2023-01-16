@@ -111,17 +111,17 @@
     margin: 0;
 }
 
-.icon{
+.icon {
     margin-right: 6px;
     font-size: 15px;
     cursor: pointer;
 }
 
-.active{
+.active {
     color: gray;
 }
 
-.icon:hover{
+.icon:hover {
     color: gray;
 }
 
@@ -169,4 +169,27 @@
     margin-bottom: 20px;
 }
 
-.content {}
+.tag {
+    margin: 10px 5px;
+    padding: 5px 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.content {
+}
+
+.btn-bor {
+    border: 1px solid whitesmoke;
+}
+
+.tag-dialogue {
+    padding: 7px;
+    margin: 5px;
+    display: none;
+}
+
+.person-img {
+    width: 100px;
+    height: auto;
+}
