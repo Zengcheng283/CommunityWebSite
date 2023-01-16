@@ -43,4 +43,12 @@ public class UserService {
         User user = userMapper.selectByToken(token);
         return user != null;
     }
+
+    public User selectUser(User user) {
+        return userMapper.selectByToken(user.getToken());
+    }
+
+    public boolean checkPerson(User user) {
+        return userMapper.selectByToken(user.getToken()) != null || userMapper.selectByAccountId(user.getAccountId()) != null;
+    }
 }

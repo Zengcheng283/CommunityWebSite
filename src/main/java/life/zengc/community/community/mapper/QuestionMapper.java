@@ -77,4 +77,16 @@ public interface QuestionMapper {
 
     @Delete("delete from question where id = #{id}")
     int deleteById(@Param(value = "id") String id);
+
+    /**
+     * 查询相关问题
+     * mybatis中，在''中添加变量需要使用$
+     * @param tags
+     * @return
+     */
+    @Select("select * from question where tag regexp #{tags} and id != #{id}")
+    List<Question> selectRelated(@Param(value = "tags") String tags, @Param(value = "id") String id);
+
+    @Select("select * from question where creator = #{creator}")
+    List<Question> getByCreator(@Param(value = "creator") String creator);
 }

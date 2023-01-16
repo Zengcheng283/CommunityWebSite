@@ -133,3 +133,20 @@ function collapseComments(e) {
         e.setAttribute("data-collapse", "in");
     }
 }
+
+function selectTag(e) {
+    var value = e.getAttribute("data-tag");
+    var val = $("#tag").val();
+
+    if (val.indexOf(value) === -1) {
+        if (val) {
+            $("#tag").val(val + "," + value);
+        } else {
+            $("#tag").val(value);
+        }
+    }
+}
+
+function showTagDialogue() {
+    $("#tagDialogue").show();
+}

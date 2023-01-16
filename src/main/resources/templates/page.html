@@ -5,7 +5,7 @@
 <body>
 <div th:fragment="page">
     <nav aria-label="Page navigation" class="page-navigation">
-        <ul class="pagination">
+        <ul class="pagination" th:if="${pageDTO.totalPage != 0}">
             <li th:if="${pageDTO.showFirstPage}">
                 <a aria-label="Previous" th:href="@{/(page=1)}">
                     <span aria-hidden="true">&lt;&lt;</span>

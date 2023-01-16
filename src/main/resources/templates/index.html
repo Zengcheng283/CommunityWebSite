@@ -15,7 +15,7 @@
         // 获取当前页面是否有存储返回页面
         var item = window.sessionStorage.getItem("callBackPage");
         console.log(item);
-        if (item != null || item === "localhost:8887/") {
+        if (item !== null || item === "http://localhost:8887/") {
             // 有返回页面，说明不是在当前页登录，返回原登录页
             // console.log(item);
             // 将sessionStorage中的返回页删除，防止返回主页时再次找到

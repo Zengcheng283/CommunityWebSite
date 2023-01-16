@@ -14,14 +14,12 @@ import life.zengc.community.community.model.Comment;
 import life.zengc.community.community.model.Question;
 import life.zengc.community.community.model.User;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -163,4 +161,32 @@ public class QuestionService {
     }
 
 
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        if (StringUtils.isBlank(questionDTO.getTag())) {
+            return new ArrayList<>();
+        }
+
+        String tags = questionDTO.getTag().replace(",", "|");
+        List<Question> questionList = questionMapper.selectRelated(tags, questionDTO.getId());
+        return questionList.stream().map(question -> {
+
+            QuestionDTO relatedQuestionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question, relatedQuestionDTO);
+            User user = userMapper.findById(question.getCreator());
+            relatedQuestionDTO.setUser(user);
+            return relatedQuestionDTO;
+
+        }).collect(Collectors.toList());
+    }
+
+    public List<QuestionDTO> getByCreator(User user) {
+        String creator = user.getId();
+        List<Question> questionList = questionMapper.getByCreator(creator);
+        return questionList.stream().map(question -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTO.setUser(user);
+            return questionDTO;
+        }).collect(Collectors.toList());
+    }
 }

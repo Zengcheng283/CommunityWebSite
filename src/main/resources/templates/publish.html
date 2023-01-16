@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/community.css"/>
     <script src="/js/jquery-3.6.3.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
 </head>
 <body class="body">
 <div th:insert="~{navigation :: nav}"></div>
@@ -43,7 +44,36 @@
                 <div class="form-group">
                     <label for="title" class="text-main">添加标签</label>
                     <input type="text" class="form-control input-text" id="tag" name="tag" placeholder="输入标签"
-                           th:value="${questionTag}">
+                           th:value="${questionTag}" autocomplete="off" onclick="showTagDialogue()">
+
+                    <div id="tagDialogue" class="tag-dialogue">
+
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs white-smoke-text" role="tablist">
+                            <li role="presentation" th:each="tagDTO, tagDTOStatus: ${tagDTOList}"
+                                th:class="${tagDTOStatus.first ? 'active' : ''}">
+                                <a th:href="@{'#' + ${tagDTO.alTagName}}" aria-controls="language" role="tab"
+                                   data-toggle="tab" class="white-smoke-text" th:text="${tagDTO.alTagName}"></a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content white-smoke-text tag">
+                            <div role="tabpanel" th:id="${tagDTO.alTagName}" th:class="${tagDTOStatus.first ? 'active tab-pane' : ' tab-pane '}"
+                                 th:each="tagDTO, tagDTOStatus: ${tagDTOList}">
+                                <span class="label label-default tag" th:each="detailTag: ${tagDTO.detailTagName}" onclick="selectTag(this)"
+                                      th:data-tag="${detailTag}">
+                                    <span class="glyphicon glyphicon-tags"></span>
+                                    <span th:text="${detailTag}"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                    </div>
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${tag}"
                           th:if="${tag != null}">
