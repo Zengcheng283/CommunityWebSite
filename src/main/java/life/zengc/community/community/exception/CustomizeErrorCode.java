@@ -11,6 +11,8 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     COMMENT_ADD_ERROR(2008, "评论回复不成功"),
     NO_COMMENT(2009, "回复未输入内容"),
     DATA_BASE_INSERT_ERROR(2010, "数据库插入失败"),
+    NOTIFICATION_TYPE_ERROR(2011, "类型错误"),
+    NOTIFICATION_ADD_ERROR(2011, "回复失败"),
     ;
 
     @Override

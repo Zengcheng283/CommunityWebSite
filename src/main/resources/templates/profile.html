@@ -16,24 +16,39 @@
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 white-smoke-text">
             <h2><span th:text="${sectionName}"></span></h2>
             <hr>
-            <div class="media" th:each="questionDTO: ${pageDTO.questionDTOList}">
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object img-rounded" th:src="${questionDTO.user.avatarUrl}">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">
-                        <a th:text="${questionDTO.title}" th:href="@{'/details/' + ${questionDTO.id}}" class="link-text"></a>
-                    </h4>
-                    <span th:text="${questionDTO.description}"></span>
-                    <br>
-                    <span class="text-desc"><span th:text="${questionDTO.commentCount}"></span> 个回复 · <span
-                            th:text="${questionDTO.viewCount}"></span> 个浏览 · <span
-                            th:text="${#dates.format(questionDTO.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span></span>
+            <div th:if="${section == 'published'}">
+                <div class="media" th:each="DTO: ${pageDTO.DTOList}">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-rounded" th:src="${DTO.user.avatarUrl}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <a th:text="${DTO.title}" th:href="@{'/details/' + ${DTO.id}}" class="link-text"></a>
+                        </h4>
+                        <span th:text="${DTO.description}"></span>
+                        <br>
+                        <span class="text-desc"><span th:text="${DTO.commentCount}"></span> 个回复 · <span
+                                th:text="${DTO.viewCount}"></span> 个浏览 · <span
+                                th:text="${#dates.format(DTO.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                    </div>
                 </div>
             </div>
-            <nav aria-label="Page navigation">
+            <div th:if="${section == 'reply'}">
+                <div class="media" th:each="DTO: ${pageDTO.DTOList}">
+                    <h4 class="media-heading">
+                        <span th:class="${DTO.status == 0 ? 'glyphicon glyphicon-alert' : 'glyphicon glyphicon-check'}"></span>
+                        <a th:text="${DTO.notifier.name}" href="#"></a>
+                        <span th:text="${DTO.type == 1 ? ' 回复了问题 ' : ' 回复了回复 '}"></span>
+                        <a th:text="${DTO.outerTitle}" th:href="@{'/notification/' + ${DTO.outerId}}"></a>
+                    </h4>
+                    <div class="media-body">
+                        <span th:text="${#dates.format(DTO.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Page navigation" th:if="${pageDTO.getTotalPage() != 0}">
                 <ul class="pagination">
                     <li th:if="${pageDTO.showFirstPage}">
                         <a aria-label="Previous" th:href="@{'/profile/'+${section}(page=1)}">
@@ -65,10 +80,10 @@
             <div class="list-group">
                 <a href="/profile/published"
                    th:class="${section == 'published'} ? 'active list-group-item' : 'list-group-item'">我的发布</a>
-                <a href="/profile/replace"
-                   th:class="${section == 'replace'} ? 'active list-group-item' : 'list-group-item'">
+                <a href="/profile/reply"
+                   th:class="${section == 'reply'} ? 'active list-group-item' : 'list-group-item'">
                     最新回复
-                    <span class="badge" th:text="${replaceNumber}"></span>
+                    <span class="badge" th:text="${session.replyNumber}" th:if="${session.replyNumber > 0}"></span>
                 </a>
             </div>
         </div>

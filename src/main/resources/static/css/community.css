@@ -193,3 +193,64 @@
     width: 100px;
     height: auto;
 }
+
+.navbar {
+    border-bottom: 1px solid whitesmoke;
+}
+
+.nav-text {
+    color: whitesmoke;
+}
+
+.nav-text:hover {
+    background-color: whitesmoke;
+    color: black;
+}
+
+.navbar-brand:hover {
+    text-decoration: none;
+    color: gray;
+}
+
+.white-smoke-text-imp {
+    color: whitesmoke !important;
+}
+
+.white-smoke-text-imp:hover {
+    color: black !important;
+}
+
+/*子元素由父元素控制*/
+
+.drop:hover .drop-child {
+    color: black;
+}
+
+.drop:focus .drop-child {
+    color: black;
+}
+
+
+.editormd-theme-dark {
+    border-color: #1a1a17;
+
+}
+
+.editormd-theme-dark .editormd-toolbar {
+    background: #1A1A17;
+    border-color: #1a1a17;
+}
+
+.editormd-theme-dark .editormd-menu > li > a {
+    color: #777;
+    border-color: #1a1a17;
+}
+
+.editormd-theme-dark .editormd-menu > li.divider {
+    border-right: 1px solid #111;
+}
+
+.editormd-theme-dark .editormd-menu > li > a:hover, .editormd-menu > li > a.active {
+    border-color: #333;
+    background: #333;
+}

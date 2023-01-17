@@ -2,6 +2,7 @@ package life.zengc.community.community.intercepters;
 
 import life.zengc.community.community.mapper.UserMapper;
 import life.zengc.community.community.model.User;
+import life.zengc.community.community.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User user;
@@ -31,6 +35,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     user = userMapper.findByToken(token);
                     if (user != null) {
                         request.getSession().setAttribute("user", user);
+                        Integer replyNumber = notificationService.getNotificationCount(user.getId());
+                        request.getSession().setAttribute("replyNumber", replyNumber);
                     }
                     break;
                 }

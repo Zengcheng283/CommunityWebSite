@@ -38,14 +38,14 @@ public class QuestionService {
     @Autowired
     private CommentMapper commentMapper;
 
-    public PageDTO list(Integer page, Integer size) {
+    public PageDTO<QuestionDTO> list(Integer page, Integer size) {
         Integer totalCount = questionMapper.count();
 //        if (totalCount == 0) {
 //            return new PageDTO();
 //        }
         List<QuestionDTO> questionDTOList = new ArrayList<>();
-        PageDTO pageDTO = new PageDTO();
-        pageDTO.setQuestionDTOList(questionDTOList);
+        PageDTO<QuestionDTO> pageDTO = new PageDTO<>();
+        pageDTO.setDTOList(questionDTOList);
         pageDTO.setPage(totalCount, page, size);
 
         if (page < 1) {
@@ -72,15 +72,13 @@ public class QuestionService {
         return pageDTO;
     }
 
-    public PageDTO list(Integer page, Integer size, String id) {
+    public PageDTO<QuestionDTO> list(Integer page, Integer size, String id) {
 
         Integer totalCount = questionMapper.countById(id);
 
         log.info("totalCount: {}", totalCount);
 
-        List<QuestionDTO> questionDTOList = new ArrayList<>();
-        PageDTO pageDTO = new PageDTO();
-        pageDTO.setQuestionDTOList(questionDTOList);
+        PageDTO<QuestionDTO> pageDTO = new PageDTO<>();
         pageDTO.setPage(totalCount, page, size);
 
         if (page < 1) {
@@ -94,15 +92,15 @@ public class QuestionService {
 
         List<Question> questionList = questionMapper.listById(offset, size, id);
 
-
-        for (Question question : questionList) {
+        List<QuestionDTO> questionDTOList = questionList.stream().map(question -> {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
-            questionDTOList.add(questionDTO);
-        }
+            return questionDTO;
+        }).collect(Collectors.toList());
 
+        pageDTO.setDTOList(questionDTOList);
 
         return pageDTO;
 

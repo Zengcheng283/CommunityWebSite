@@ -3,12 +3,16 @@ package life.zengc.community.community.service;
 import life.zengc.community.community.common.CommonMethods;
 import life.zengc.community.community.dto.CommentDTO;
 import life.zengc.community.community.enums.CommentTypeEnum;
+import life.zengc.community.community.enums.NotificationStatusEnum;
+import life.zengc.community.community.enums.NotificationTypeEnum;
 import life.zengc.community.community.exception.CustomizeErrorCode;
 import life.zengc.community.community.exception.CustomizeException;
 import life.zengc.community.community.mapper.CommentMapper;
+import life.zengc.community.community.mapper.NotificationMapper;
 import life.zengc.community.community.mapper.QuestionMapper;
 import life.zengc.community.community.mapper.UserMapper;
 import life.zengc.community.community.model.Comment;
+import life.zengc.community.community.model.Notification;
 import life.zengc.community.community.model.Question;
 import life.zengc.community.community.model.User;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +40,9 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public void insert(Comment comment) {
         if (comment.getParentId() == null || comment.getParentId().equals("")) {
@@ -52,6 +59,14 @@ public class CommentService {
             if (resultComment == null) {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
+            if (!Objects.equals(resultComment.getCommentator(), comment.getCommentator())) {
+                if (!notificationService.notificationCreate(NotificationTypeEnum.REPLY_COMMENT,
+                        NotificationStatusEnum.UNREAD,
+                        comment,
+                        resultComment)) {
+                    throw new CustomizeException(CustomizeErrorCode.NOTIFICATION_ADD_ERROR);
+                }
+            }
             if (insertTest(comment)) {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_ADD_ERROR);
             }
@@ -61,10 +76,18 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.QUSTION_NOT_FOUND);
             }
             // 回复问题
+            if (!Objects.equals(resultQuestion.getCreator(), comment.getCommentator())) {
+                if (!notificationService.notificationCreate(NotificationTypeEnum.REPLY_QUESTION,
+                        NotificationStatusEnum.UNREAD,
+                        comment,
+                        resultQuestion)) {
+                    throw new CustomizeException(CustomizeErrorCode.NOTIFICATION_ADD_ERROR);
+                }
+                questionMapper.incCommentCount(resultQuestion);
+            }
             if (insertTest(comment)) {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_ADD_ERROR);
             }
-            questionMapper.incCommentCount(resultQuestion);
         }
     }
 

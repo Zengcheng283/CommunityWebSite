@@ -25,12 +25,12 @@
                         </a>
                     </div>
                     <div class="jumbotron media-left tran-background white-smoke-text">
-                        <h1>账号名称:
+                        <h1>
                             <span th:text="${user.name}"></span>
                         </h1>
                         <div>
                             创建日期:
-                            <span th:text="${#dates.format(user.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
+                            <span th:text="${#dates.format(user.gmtCreate, 'yyyy-MM-dd HH:mm')}" id="date"></span>
                         </div>
                     </div>
                 </div>

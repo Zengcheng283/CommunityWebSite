@@ -9,6 +9,21 @@
     <script src="/js/jquery-3.6.3.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/community.js" type="application/javascript"></script>
+    <script src="/js/jquery-1.11.3.min.js"></script>
+    <script src="/editormd/editormd.min.js"></script>
+    <link rel="stylesheet" href="/editormd/css/editormd.css"/>
+    <script type="text/javascript">
+        $(function () {
+            var editor = editormd("test-editor", {
+                width  : "100%",
+                height : 640,
+                path: "/editormd/lib/",
+                theme: "dark",//工具栏主题
+                previewTheme: "dark",//预览主题
+                editorTheme: "pastel-on-dark",//编辑主题
+            });
+        });
+    </script>
 </head>
 <body class="body">
 <div th:insert="~{navigation :: nav}"></div>
@@ -34,8 +49,9 @@
                 </div>
                 <div class="form-group">
                     <label for="title" class="text-main">问题补充</label>
-                    <textarea name="description" id="description" class="form-control input-text" cols="30" rows="10"
-                              th:text="${questionDescription}"></textarea>
+                    <div id="test-editor" class="editormd-theme-dark">
+                        <textarea></textarea>
+                    </div>
                     <span class="alert alert-danger col-lg-12 col-md-12 col-xs-12"
                           th:text="${description}"
                           th:if="${description != null}">
@@ -59,9 +75,11 @@
 
                         <!-- Tab panes -->
                         <div class="tab-content white-smoke-text tag">
-                            <div role="tabpanel" th:id="${tagDTO.alTagName}" th:class="${tagDTOStatus.first ? 'active tab-pane' : ' tab-pane '}"
+                            <div role="tabpanel" th:id="${tagDTO.alTagName}"
+                                 th:class="${tagDTOStatus.first ? 'active tab-pane' : ' tab-pane '}"
                                  th:each="tagDTO, tagDTOStatus: ${tagDTOList}">
-                                <span class="label label-default tag" th:each="detailTag: ${tagDTO.detailTagName}" onclick="selectTag(this)"
+                                <span class="label label-default tag" th:each="detailTag: ${tagDTO.detailTagName}"
+                                      onclick="selectTag(this)"
                                       th:data-tag="${detailTag}">
                                     <span class="glyphicon glyphicon-tags"></span>
                                     <span th:text="${detailTag}"></span>
@@ -103,5 +121,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    // 判断是否被选中的是标签输入框或者标签页，如果是则不允许消失实现
+    var td = false;
+    var ta = false;
+    $("#tagDialogue").click(function (event) {
+        td = true;
+    });
+    tag
+    $("#tag").click(function (event) {
+        ta = true;
+    });
+    $(document).click(function () {
+        if (!td && !ta) {
+            $("#tagDialogue").hide();
+        }
+        td = false;
+        ta = false;
+    });
+</script>
 </body>
 </html>

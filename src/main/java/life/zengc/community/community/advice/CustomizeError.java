@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import life.zengc.community.community.dto.ResultDTO;
 import life.zengc.community.community.exception.CustomizeErrorCode;
 import life.zengc.community.community.exception.CustomizeException;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @ControllerAdvice
 public class CustomizeError {
 
@@ -33,6 +35,7 @@ public class CustomizeError {
         String contentType = request.getContentType();
 
         if (Objects.equals(contentType, "application/json")) {
+            log.info(ex.getMessage());
             ResultDTO resultDTO = null;
             Map<String, String> data = new HashMap<>();
             // 返回JSON
