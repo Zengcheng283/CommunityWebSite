@@ -16,8 +16,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private SessionInterceptor sessionInterceptor;
 
+    @Autowired
+    private RquestInterceptor rquestInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor).addPathPatterns("/**").excludePathPatterns("/static/**");
+        registry.addInterceptor(rquestInterceptor).addPathPatterns("/**");
     }
 }

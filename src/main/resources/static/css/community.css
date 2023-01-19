@@ -126,7 +126,7 @@
 }
 
 .tran-background {
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
 .comment-btn:hover {
