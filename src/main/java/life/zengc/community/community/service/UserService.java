@@ -6,6 +6,9 @@ import life.zengc.community.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UserService {
 
@@ -50,5 +53,13 @@ public class UserService {
 
     public boolean checkPerson(User user) {
         return userMapper.selectByToken(user.getToken()) != null || userMapper.selectByAccountId(user.getAccountId()) != null;
+    }
+
+    public Object selectUserById(String userId) {
+        User user = userMapper.selectUserById(userId);
+        Map<String, String> result = new HashMap<>();
+        result.put("name", user.getName());
+        result.put("avatarUrl", user.getAvatarUrl());
+        return result;
     }
 }

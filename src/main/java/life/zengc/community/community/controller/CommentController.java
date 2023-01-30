@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 public class CommentController {
     @Autowired
     private CommentService commentService;
@@ -60,8 +60,7 @@ public class CommentController {
 
     @ResponseBody
     @RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
-    public ResultDTO<List<CommentDTO>> comment(@PathVariable(name = "id") String id) {
-        List<CommentDTO> commentDTOList = commentService.listByQuestionId(id, CommentTypeEnum.COMMENT);
-        return ResultDTO.ok(commentDTOList);
+    public Object comment(@PathVariable(name = "id") String id) {
+        return commentService.listByQuestionId(id, CommentTypeEnum.QUESTION);
     }
 }

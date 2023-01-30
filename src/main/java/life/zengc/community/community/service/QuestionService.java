@@ -159,7 +159,7 @@ public class QuestionService {
     }
 
 
-    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+    public List<Object> selectRelated(QuestionDTO questionDTO) {
         if (StringUtils.isBlank(questionDTO.getTag())) {
             return new ArrayList<>();
         }
@@ -167,12 +167,15 @@ public class QuestionService {
         String tags = questionDTO.getTag().replace(",", "|");
         List<Question> questionList = questionMapper.selectRelated(tags, questionDTO.getId());
         return questionList.stream().map(question -> {
+            Map<String, Object> related = new HashMap<>();
+            related.put("id", question.getId());
+            related.put("title", question.getTitle());
 
-            QuestionDTO relatedQuestionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question, relatedQuestionDTO);
             User user = userMapper.findById(question.getCreator());
-            relatedQuestionDTO.setUser(user);
-            return relatedQuestionDTO;
+
+            related.put("avatarUrl", user.getAvatarUrl());
+            related.put("name", user.getName());
+            return related;
 
         }).collect(Collectors.toList());
     }
@@ -186,5 +189,9 @@ public class QuestionService {
             questionDTO.setUser(user);
             return questionDTO;
         }).collect(Collectors.toList());
+    }
+
+    public String getCreator(String id) {
+        return questionMapper.getCreatorById(id);
     }
 }

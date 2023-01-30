@@ -89,4 +89,7 @@ public interface QuestionMapper {
 
     @Select("select * from question where creator = #{creator}")
     List<Question> getByCreator(@Param(value = "creator") String creator);
+
+    @Select("select creator from question where id = #{id}")
+    String getCreatorById(@Param(value = "id") String id);
 }

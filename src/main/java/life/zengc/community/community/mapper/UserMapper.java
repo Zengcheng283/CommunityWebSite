@@ -29,4 +29,7 @@ public interface UserMapper {
 
     @Select("select * from user where token = #{token}")
     User selectByAccountId(@Param("accountId") String accountId);
+
+    @Select("select * from user where id = #{userId}")
+    User selectUserById(@Param(value = "userId") String userId);
 }
