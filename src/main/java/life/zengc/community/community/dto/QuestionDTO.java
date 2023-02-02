@@ -26,5 +26,7 @@ public class QuestionDTO {
 
     private String tag;
 
-    private User user;
+    private String creatorAvatar;
+
+    private String creatorName;
 }

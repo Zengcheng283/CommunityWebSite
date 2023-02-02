@@ -32,4 +32,16 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{userId}")
     User selectUserById(@Param(value = "userId") String userId);
+
+    @Select("select * from user where name = #{username}")
+    User findByName(@Param(value = "username") String username);
+
+    @Update("update user set token = #{token} where id = #{id}")
+    void updateToken(@Param(value = "id") String id, @Param(value = "token") String token);
+
+    @Select("select * from user where name = #{username}")
+    Boolean selectByUsername(@Param(value = "username") String username);
+
+    @Select("select * from user where account_id = #{phone}")
+    Boolean selectByPhone(@Param(value = "phone") String phone);
 }

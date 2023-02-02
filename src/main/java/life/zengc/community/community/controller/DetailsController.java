@@ -33,17 +33,10 @@ public class DetailsController {
 
     @ResponseBody
     @GetMapping("/details/{id}")
-    public Object details(@PathVariable(name = "id") String id,
-                          Model model) {
+    public Object details(@PathVariable(name = "id") String id) {
         questionService.incView(id);
         QuestionDTO questionDTO = questionService.getById(id);
-        List<Object> relatedQuestion = questionService.selectRelated(questionDTO);
-        List<CommentDTO> commentDTOList = commentService.listByQuestionId(id, CommentTypeEnum.QUESTION);
-        Map<String, Object> data = new HashMap<>();
-        data.put("questionDTO", questionDTO);
-//        data.put("commentDTOList", commentDTOList);
-//        data.put("relatedQuestion", relatedQuestion);
-        return data;
+        return questionDTO;
     }
 
     @ResponseBody

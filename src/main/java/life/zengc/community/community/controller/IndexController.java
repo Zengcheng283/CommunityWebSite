@@ -40,7 +40,7 @@ public class IndexController {
      */
     @ResponseBody
     @GetMapping("/")
-    public ResultDTO index(
+    public Object index(
             HttpServletRequest request,
             Model model,
             @RequestParam(name = "page", defaultValue = "1") Integer page,
@@ -60,6 +60,6 @@ public class IndexController {
 //            }
 //        }
         PageDTO<QuestionDTO> pageDTO = questionService.list(page, size);
-        return ResultDTO.ok(pageDTO);
+        return pageDTO;
     }
 }

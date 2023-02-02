@@ -1,31 +1,31 @@
 package life.zengc.community.community.controller;
 
 import com.alibaba.fastjson.JSON;
-import life.zengc.community.community.common.CommonMethods;
 import life.zengc.community.community.dto.AccessTokenDTO;
 import life.zengc.community.community.dto.GithubUser;
+import life.zengc.community.community.exception.CustomizeErrorCode;
+import life.zengc.community.community.exception.CustomizeException;
 import life.zengc.community.community.model.User;
 import life.zengc.community.community.provider.GithubProvider;
 import life.zengc.community.community.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * 用户登录控制器
  */
 @Slf4j
-@Controller
+@RestController
 public class AuthorizeController {
 
     @Autowired
@@ -45,6 +45,7 @@ public class AuthorizeController {
 
     /**
      * 设置用户状态
+     *
      * @param githubUser
      * @return
      */
@@ -60,6 +61,7 @@ public class AuthorizeController {
 
     /**
      * 设置用户登录
+     *
      * @param code
      * @param clientId
      * @param clientSecret
@@ -85,13 +87,15 @@ public class AuthorizeController {
 
     /**
      * 对返回的用户token插入数据库进行持久化操作
+     *
      * @param code
      * @param state
      * @param request
      * @return
      */
     @GetMapping("/callback")
-    public String callBack(@RequestParam(name = "code") String code,
+    @ResponseBody
+    public Object callBack(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
                            HttpServletRequest request,
                            HttpServletResponse response) throws IOException {
@@ -100,15 +104,81 @@ public class AuthorizeController {
         AccessTokenDTO accessTokenDTO = setAccessTokenDTOData(code, clientId, clientSecret, redirectURI, state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
-        log.info("UserName: "+ githubUser.getName());
+        log.info("UserName: " + githubUser.getName());
         if (githubUser != null) {
             User user = setPerson(githubUser);
             user = userService.createOrUpdate(user);
             response.addCookie(new Cookie("token", user.getToken()));
-            return "redirect:/";
-        }else {
-            return "redirect:/";
+            return user.getToken();
+        } else {
+            return null;
         }
+    }
+
+    @GetMapping("/userInfo/{id}")
+    public Object userInfo(@PathVariable(name = "id") String id) {
+        Map<String, String> data = userService.getUserInfo(id);
+        return data;
+
+    }
+
+    @PostMapping("/login")
+    public Object login(@RequestBody Map<String, String> data) {
+        log.info(data.toString());
+        try {
+            String token = userService.getUser(data.get("username"), data.get("password"));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 200);
+            response.put("token", token);
+
+            return response;
+        } catch (CustomizeException ex) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", ex.getCode());
+            response.put("message", ex.getMessage());
+
+            return response;
+        }
+
+    }
+
+    @PostMapping("/registered")
+    public Object registered(@RequestBody Map<String, String> data) {
+        log.info(data.toString());
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String username = data.get("username");
+            String password = data.get("password");
+            String phone = data.get("phone");
+            boolean token = userService.checkExist(username, phone);
+            if (!token) {
+                User user = new User();
+                user.setName(username);
+                user.setPassword(password);
+                user.setAccountId(phone);
+                if (userService.createUser(user)) {
+                    response.put("code", 200);
+                    response.put("response", "success");
+                    return response;
+                } else {
+                    response.put("code", CustomizeErrorCode.SERVICE_ERROR.getCode());
+                    response.put("response", CustomizeErrorCode.SERVICE_ERROR.getMessage());
+                    return response;
+                }
+
+            }
+        } catch (CustomizeException ex) {
+
+            response.put("code", ex.getCode());
+            response.put("message", ex.getMessage());
+
+            return response;
+        }
+
+        response.put("code", CustomizeErrorCode.SERVICE_ERROR.getCode());
+        response.put("response", CustomizeErrorCode.SERVICE_ERROR.getMessage());
+        return response;
     }
 
     @GetMapping("/logout")

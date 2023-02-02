@@ -40,9 +40,7 @@ public class QuestionService {
 
     public PageDTO<QuestionDTO> list(Integer page, Integer size) {
         Integer totalCount = questionMapper.count();
-//        if (totalCount == 0) {
-//            return new PageDTO();
-//        }
+
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         PageDTO<QuestionDTO> pageDTO = new PageDTO<>();
         pageDTO.setDTOList(questionDTOList);
@@ -54,7 +52,7 @@ public class QuestionService {
         if (page > pageDTO.getTotalPage() && pageDTO.getTotalPage() > 0) {
             page = pageDTO.getTotalPage();
         }
-        // offset = size * (page - 1)
+
         Integer offset = size * (page - 1);
 
         List<Question> questionList = questionMapper.list(offset, size);
@@ -64,7 +62,7 @@ public class QuestionService {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setCreatorAvatar(user.getAvatarUrl());
             questionDTOList.add(questionDTO);
         }
 
@@ -96,7 +94,7 @@ public class QuestionService {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setCreatorAvatar(user.getAvatarUrl());
             return questionDTO;
         }).collect(Collectors.toList());
 
@@ -117,7 +115,8 @@ public class QuestionService {
         BeanUtils.copyProperties(question, questionDTO);
 
         User user = userMapper.findById(question.getCreator());
-        questionDTO.setUser(user);
+        questionDTO.setCreatorAvatar(user.getAvatarUrl());
+        questionDTO.setCreatorName(user.getName());
 
         return questionDTO;
     }
@@ -186,7 +185,7 @@ public class QuestionService {
         return questionList.stream().map(question -> {
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setCreatorAvatar(user.getAvatarUrl());
             return questionDTO;
         }).collect(Collectors.toList());
     }

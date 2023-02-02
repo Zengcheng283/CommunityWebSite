@@ -13,6 +13,8 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     DATA_BASE_INSERT_ERROR(2010, "数据库插入失败"),
     NOTIFICATION_TYPE_ERROR(2011, "类型错误"),
     NOTIFICATION_ADD_ERROR(2011, "回复失败"),
+    USER_NOT_EXIST(2012, "用户不存在"),
+    PASSWORD_NOT_RIGHT(2013, "密码不正确"),
     ;
 
     @Override

@@ -45,4 +45,16 @@ public class CommonMethods
         log.info(stringBuilder.toString());
         return stringBuilder.toString();
     }
+
+    public String randomToken() {
+        String key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int keyLength = key.length();
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < 16; i++) {
+            stringBuilder.append(key.charAt(random.nextInt(keyLength)));
+        }
+        log.info(stringBuilder.toString());
+        return stringBuilder.toString();
+    }
 }
